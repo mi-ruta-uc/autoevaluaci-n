@@ -61,7 +61,7 @@
             <!-- Form Card -->
             <div class="bg-white rounded-3xl border border-slate-100 shadow-xl p-6 sm:p-8 space-y-6 relative">
                 <!-- Alert Message Indicator -->
-                <div id="status-banner" class="hidden p-4 rounded-xl text-sm font-medium transition-all duration-300"></div>
+                <div id="status-banner" class="hidden p-4 rounded-xl text-sm font-medium transition-all duration-300 animate-fade-in"></div>
 
                 <form id="evalForm" onsubmit="handleFormSubmit(event)" class="space-y-6">
                     
@@ -81,16 +81,16 @@
                         </div>
                         <!-- Correo Institucional -->
                         <div>
-                            <label for="studentEmail" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Correo Institucional UCF <span class="text-rose-500">*</span></label>
+                            <label for="studentEmail" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Correo Institucional <span class="text-rose-500">*</span></label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                                     <i class="fa-regular fa-envelope text-xs"></i>
                                 </div>
                                 <input type="email" id="studentEmail" required
-                                    pattern=".+@ucf\.edu\.co"
-                                    title="Por favor, ingresa tu correo electrónico institucional terminado en @ucf.edu.co"
+                                    pattern=".+@uc\.edu\.co"
+                                    title="Por favor, ingresa tu correo electrónico institucional terminado en @uc.edu.co"
                                     class="pl-9 w-full rounded-xl border border-slate-200 p-2.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all duration-200"
-                                    placeholder="ejemplo@ucf.edu.co">
+                                    placeholder="ejemplo@uc.edu.co">
                             </div>
                         </div>
                         <!-- Grupo -->
@@ -180,7 +180,7 @@
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-slate-100">
                         <div class="flex items-center space-x-2 text-xs text-slate-400">
                             <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                            <span>Guardado en tiempo real</span>
+                            <span>Guardado cifrado en tiempo real</span>
                         </div>
                         <button type="submit" id="submitBtn"
                             class="w-full sm:w-auto bg-teal-600 hover:bg-teal-700 text-white font-semibold px-8 py-3.5 rounded-xl shadow-lg shadow-teal-600/15 transition-all duration-200 flex items-center justify-center space-x-2">
@@ -204,9 +204,9 @@
 
     <!-- JS Logic -->
     <script>
-        // Global States - Hardcoded Apps Script URL
-        let currentRating = 0;
+        // URL de tu Apps Script integrada
         const appsScriptURL = 'https://script.google.com/macros/s/AKfycbwAVVR56PzbC3M4Hl0j8U5rIBCqcaIBmPPdl2N61Eqlizbs8vxr8y9w-EPqdb8ZdAd9/exec';
+        let currentRating = 0;
 
         // Dynamic Rating Feedback texts
         const ratingDescriptions = {
@@ -233,7 +233,6 @@
             feedbackText.className = "text-xs font-semibold text-slate-500 transition-all duration-200 leading-relaxed";
         }
 
-        // Reset display to selection
         function resetStars() {
             updateStarUI(currentRating);
             const feedbackText = document.getElementById('feedback-rating');
@@ -268,9 +267,12 @@
             const group = document.getElementById('studentGroup').value;
             const comments = document.getElementById('comments').value.trim();
 
-            // Strict Institutional Email Check for UCF (comfamiliar)
-            if (!email.endsWith('@ucf.edu.co')) {
-                showBanner('Error: Debes ingresar tu correo institucional de Comfamiliar terminado en @ucf.edu.co para registrar la autoevaluación.', 'error');
+            console.log("Iniciando envío de autoevaluación...");
+            console.log("Datos de envío:", { name, email, group, rating: currentRating });
+
+            // Strict Institutional Email Check for UCF (comfamiliar using @uc.edu.co domain)
+            if (!email.endsWith('@uc.edu.co')) {
+                showBanner('Error: Debes ingresar tu correo institucional terminado en @uc.edu.co para registrar la autoevaluación.', 'error');
                 return;
             }
 
@@ -296,22 +298,24 @@
             setButtonState(submitBtn, true);
 
             try {
-                // Sent directly to the defined UCC Apps Script web app
-                await fetch(appsScriptURL, {
+                // Sent directly to the defined Apps Script web app
+                // Usando text/plain para evitar problemas de CORS preflight (OPTIONS) en entornos de producción rígidos como GitHub Pages
+                const response = await fetch(appsScriptURL, {
                     method: 'POST',
-                    mode: 'no-cors', // Avoid complex redirect CORS preflights on Google Servers
+                    mode: 'no-cors', 
                     headers: {
                         'Content-Type': 'text/plain'
                     },
                     body: JSON.stringify(payload)
                 });
 
-                showBanner('¡Éxito! Tu autoevaluación se ha guardado exitosamente en Google Sheets.', 'success');
+                console.log("Petición completada (Debido a no-cors, la respuesta es opaca).");
+                showBanner('¡Éxito! Tu autoevaluación se ha enviado correctamente a Google Sheets.', 'success');
                 resetForm();
 
             } catch (error) {
-                console.error('Error submitting form:', error);
-                showBanner('Ocurrió un error al enviar los datos. Revisa tu conexión de red.', 'error');
+                console.error('Error crítico durante el fetch en GitHub Pages:', error);
+                showBanner('Ocurrió un error al enviar los datos. Revisa la consola (F12) o desactiva extensiones de privacidad en tu navegador.', 'error');
             } finally {
                 setButtonState(submitBtn, false);
             }
@@ -347,10 +351,10 @@
             
             banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-            // Hide banner after 6 seconds
+            // Hide banner after 8 seconds
             setTimeout(() => {
                 banner.classList.add('hidden');
-            }, 6000);
+            }, 8000);
         }
 
         function resetForm() {
