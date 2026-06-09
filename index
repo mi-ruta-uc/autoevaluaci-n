@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autoevaluación - Gerencia de la Innovación</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .star-glow {
+            filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.6));
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 antialiased flex flex-col">
+
+    <!-- Header / Navbar -->
+    <header class="bg-white border-b border-slate-100 shadow-sm sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <!-- Logo del módulo con fallback -->
+                <div class="bg-white p-1 rounded-xl shadow-sm border border-slate-100 flex items-center justify-center">
+                    <img src="https://i.imgur.com/cjfV02r.png" 
+                         alt="Logo Gerencia de la Innovación" 
+                         class="h-10 w-auto object-contain rounded-lg" 
+                         onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=100&auto=format&fit=crop';">
+                </div>
+                <div>
+                    <h1 class="text-sm sm:text-lg font-bold text-slate-900 leading-tight">Módulo de Innovación</h1>
+                    <p class="text-[10px] sm:text-xs text-slate-500 font-medium">Gerencia de la Innovación</p>
+                </div>
+            </div>
+            
+            <!-- Navigation Tabs -->
+            <div class="flex space-x-1 bg-slate-100 p-1 rounded-xl">
+                <button onclick="switchTab('evaluation')" id="tab-evaluation" class="px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all duration-200 bg-white text-teal-700 shadow-sm">
+                    <i class="fa-solid fa-star-half-stroke mr-1.5"></i>Autoevaluación
+                </button>
+                <button onclick="switchTab('integration')" id="tab-integration" class="px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all duration-200 text-slate-600 hover:text-slate-900">
+                    <i class="fa-solid fa-circle-info mr-1.5"></i>Integración Sheets
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8">
+        
+        <!-- Left Side: Interactive Area -->
+        <div class="flex-1 lg:max-w-2xl xl:max-w-3xl flex flex-col">
+            
+            <!-- TAB: EVALUATION FORM -->
+            <div id="view-evaluation" class="space-y-6">
+                <!-- Welcome Card -->
+                <div class="bg-gradient-to-r from-teal-700 to-emerald-600 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-teal-900/10 relative overflow-hidden">
+                    <div class="absolute right-0 bottom-0 opacity-10 translate-x-10 translate-y-10">
+                        <i class="fa-solid fa-graduation-cap text-9xl"></i>
+                    </div>
+                    <span class="bg-teal-500/30 text-teal-100 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full border border-teal-400/20">
+                        Autoevaluación del Estudiante
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold mt-3 tracking-tight">Tu perspectiva es el motor de la innovación</h2>
+                    <p class="text-teal-100/90 text-sm mt-2 max-w-xl leading-relaxed">
+                        Queremos conocer tu apreciación honesta sobre el aprendizaje teórico, práctico y metodológico que has desarrollado a lo largo de este módulo formativo.
+                    </p>
+                </div>
+
+                <!-- Form Card -->
+                <div class="bg-white rounded-3xl border border-slate-100 shadow-xl p-6 sm:p-8 space-y-6 relative">
+                    <!-- Alert Message Indicator -->
+                    <div id="status-banner" class="hidden p-4 rounded-xl text-sm font-medium transition-all duration-300"></div>
+
+                    <form id="evalForm" onsubmit="handleFormSubmit(event)" class="space-y-6">
+                        
+                        <!-- Identification Section -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <!-- Nombre Completo -->
+                            <div>
+                                <label for="studentName" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Nombre Completo <span class="text-rose-500">*</span></label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                        <i class="fa-regular fa-user"></i>
+                                    </div>
+                                    <input type="text" id="studentName" required
+                                        class="pl-10 w-full rounded-xl border border-slate-200 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all duration-200"
+                                        placeholder="Ej. Sofía Rodríguez">
+                                </div>
+                            </div>
+                            <!-- Correo Institucional -->
+                            <div>
+                                <label for="studentEmail" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Correo Institucional (@uc.edu.co) <span class="text-rose-500">*</span></label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                        <i class="fa-regular fa-envelope"></i>
+                                    </div>
+                                    <input type="email" id="studentEmail" required
+                                        pattern=".+@uc\.edu\.co"
+                                        title="Por favor, ingresa un correo electrónico institucional terminado en @uc.edu.co"
+                                        class="pl-10 w-full rounded-xl border border-slate-200 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all duration-200"
+                                        placeholder="ejemplo@uc.edu.co">
+                                </div>
+                            </div>
+                            <!-- Grupo -->
+                            <div>
+                                <label for="studentGroup" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Grupo de Estudio <span class="text-rose-500">*</span></label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                        <i class="fa-solid fa-users"></i>
+                                    </div>
+                                    <select id="studentGroup" required
+                                        class="pl-10 pr-10 w-full rounded-xl border border-slate-200 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all duration-200 bg-white appearance-none">
+                                        <option value="" disabled selected>Selecciona tu grupo</option>
+                                        <option value="Administración de Empresas G1">Administración de Empresas G1</option>
+                                        <option value="Administración de Empresas G2">Administración de Empresas G2</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
+                                        <i class="fa-solid fa-chevron-down text-xs"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="border-t border-slate-100 my-4"></div>
+
+                        <!-- Main Single Question with Stars -->
+                        <div class="space-y-4">
+                            <div class="space-y-2">
+                                <span class="bg-amber-100 text-amber-800 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md">
+                                    Pregunta Única de Desempeño
+                                </span>
+                                <label class="block text-base sm:text-lg font-bold text-slate-900 leading-snug">
+                                    ¿Cómo evalúas globalmente el nivel de aprendizaje y desempeño que has adquirido y consolidado durante el módulo de Gerencia de la Innovación?
+                                </label>
+                                <p class="text-xs text-slate-500">Haz clic en las estrellas para seleccionar tu calificación del 1 al 5.</p>
+                            </div>
+
+                            <!-- Interactive Star Selection -->
+                            <div class="flex flex-col items-center justify-center p-6 bg-slate-50 rounded-2xl border border-dashed border-slate-200 space-y-3">
+                                <div class="flex space-x-2 sm:space-x-3" id="star-container">
+                                    <!-- Star 1 -->
+                                    <button type="button" onclick="setRating(1)" onmouseenter="hoverStars(1)" onmouseleave="resetStars()" class="focus:outline-none transform hover:scale-110 active:scale-95 transition-all duration-150">
+                                        <svg class="w-10 h-10 sm:w-12 sm:h-12 star-svg text-slate-300 fill-current" viewBox="0 0 24 24">
+                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                        </svg>
+                                    </button>
+                                    <!-- Star 2 -->
+                                    <button type="button" onclick="setRating(2)" onmouseenter="hoverStars(2)" onmouseleave="resetStars()" class="focus:outline-none transform hover:scale-110 active:scale-95 transition-all duration-150">
+                                        <svg class="w-10 h-10 sm:w-12 sm:h-12 star-svg text-slate-300 fill-current" viewBox="0 0 24 24">
+                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                        </svg>
+                                    </button>
+                                    <!-- Star 3 -->
+                                    <button type="button" onclick="setRating(3)" onmouseenter="hoverStars(3)" onmouseleave="resetStars()" class="focus:outline-none transform hover:scale-110 active:scale-95 transition-all duration-150">
+                                        <svg class="w-10 h-10 sm:w-12 sm:h-12 star-svg text-slate-300 fill-current" viewBox="0 0 24 24">
+                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                        </svg>
+                                    </button>
+                                    <!-- Star 4 -->
+                                    <button type="button" onclick="setRating(4)" onmouseenter="hoverStars(4)" onmouseleave="resetStars()" class="focus:outline-none transform hover:scale-110 active:scale-95 transition-all duration-150">
+                                        <svg class="w-10 h-10 sm:w-12 sm:h-12 star-svg text-slate-300 fill-current" viewBox="0 0 24 24">
+                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                        </svg>
+                                    </button>
+                                    <!-- Star 5 -->
+                                    <button type="button" onclick="setRating(5)" onmouseenter="hoverStars(5)" onmouseleave="resetStars()" class="focus:outline-none transform hover:scale-110 active:scale-95 transition-all duration-150">
+                                        <svg class="w-10 h-10 sm:w-12 sm:h-12 star-svg text-slate-300 fill-current" viewBox="0 0 24 24">
+                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="text-center h-6">
+                                    <p id="feedback-rating" class="text-xs font-semibold text-slate-400 transition-all duration-200">Por favor, selecciona una calificación</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Feedback Narrative Field -->
+                        <div>
+                            <label for="comments" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Retroalimentación / Justificación breve</label>
+                            <textarea id="comments" rows="3"
+                                class="w-full rounded-xl border border-slate-200 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all duration-200 resize-none"
+                                placeholder="Comparte brevemente qué aprendizaje clave te llevas de este módulo o cuál fue tu mayor reto..."></textarea>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-slate-100">
+                            <div class="flex items-center space-x-2 text-xs text-slate-500">
+                                <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span id="mode-text">Modo: Simulado (Guardado local temporal)</span>
+                            </div>
+                            <button type="submit" id="submitBtn"
+                                class="w-full sm:w-auto bg-teal-600 hover:bg-teal-700 text-white font-semibold px-8 py-3.5 rounded-xl shadow-lg shadow-teal-600/15 transition-all duration-200 flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                <span>Enviar Evaluación</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- TAB: INTEGRATION GUIDE -->
+            <div id="view-integration" class="hidden space-y-6">
+                <!-- Guide Header -->
+                <div class="bg-white rounded-3xl border border-slate-100 shadow-xl p-6 sm:p-8 space-y-4">
+                    <span class="bg-indigo-100 text-indigo-800 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full">
+                        Guía de Conexión Real
+                    </span>
+                    <h2 class="text-xl sm:text-2xl font-bold text-slate-900">Configura tu Hoja de Google Sheets</h2>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Sigue estos sencillos pasos para almacenar todas las calificaciones de tus alumnos de forma 100% automatizada utilizando <strong>Google Apps Script</strong>.
+                    </p>
+
+                    <!-- Steps Timeline -->
+                    <ol class="space-y-4 pt-2">
+                        <li class="flex gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-teal-100 text-teal-700 font-bold flex items-center justify-center text-sm">1</div>
+                            <div class="text-sm">
+                                <p class="font-semibold text-slate-800">Crea tu hoja de cálculo</p>
+                                <p class="text-slate-500">Crea una nueva hoja en Google Sheets. Si deseas, asígnale el nombre "Autoevaluaciones de Innovación".</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-teal-100 text-teal-700 font-bold flex items-center justify-center text-sm">2</div>
+                            <div class="text-sm">
+                                <p class="font-semibold text-slate-800">Abre el editor de Scripts</p>
+                                <p class="text-slate-500">En el menú superior, ve a <strong>Extensiones</strong> > <strong>Apps Script</strong>.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-teal-100 text-teal-700 font-bold flex items-center justify-center text-sm">3</div>
+                            <div class="text-sm">
+                                <p class="font-semibold text-slate-800">Copia y pega el código de abajo</p>
+                                <p class="text-slate-500">Reemplaza todo el contenido del archivo <code class="bg-slate-100 text-teal-700 px-1.5 py-0.5 rounded text-xs font-mono">Código.gs</code> con el código que te proporcionamos a continuación.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-teal-100 text-teal-700 font-bold flex items-center justify-center text-sm">4</div>
+                            <div class="text-sm">
+                                <p class="font-semibold text-slate-800">Implementa como Aplicación Web</p>
+                                <p class="text-slate-500">Haz clic en <strong>Implementar > Nueva implementación</strong>. Selecciona "Aplicación web". En "Quién tiene acceso", selecciona <strong>Cualquiera</strong> (es crucial para permitir las respuestas de tus estudiantes) e implementa.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-teal-100 text-teal-700 font-bold flex items-center justify-center text-sm">5</div>
+                            <div class="text-sm">
+                                <p class="font-semibold text-slate-800">Conecta el formulario</p>
+                                <p class="text-slate-500">Copia la URL de la aplicación web que te otorgó Google y pégala en el panel derecho de esta página.</p>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+
+                <!-- Copyable Code Block -->
+                <div class="bg-slate-900 rounded-3xl overflow-hidden shadow-xl border border-slate-800">
+                    <div class="bg-slate-800 px-6 py-4 flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+                            <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                            <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                            <span class="text-xs text-slate-400 font-mono ml-2">Código.gs (Apps Script)</span>
+                        </div>
+                        <button onclick="copyAppsScriptCode()" id="copyBtn" class="text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-1.5 rounded-lg transition-all duration-150 flex items-center space-x-1.5">
+                            <i class="fa-regular fa-copy"></i>
+                            <span>Copiar Código</span>
+                        </button>
+                    </div>
+                    <pre class="p-6 text-emerald-400 font-mono text-xs overflow-x-auto leading-relaxed"><code id="code-block">/*
+  GOOGLE APPS SCRIPT PARA ALMACENAR AUTOEVALUACIONES
+  Este código interceptará el envío del formulario y lo guardará ordenadamente.
+*/
+
+function doPost(e) {
+  // Configuración de Cabecera CORS para evitar bloqueos del navegador
+  var headers = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type"
+  };
+
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    
+    // Preparar encabezados en la primera fila si está vacía
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow([
+        "Marca temporal", 
+        "Nombre del Estudiante", 
+        "Correo Electrónico", 
+        "Grupo / Curso", 
+        "Calificación (Estrellas)", 
+        "Retroalimentación / Justificación"
+      ]);
+      
+      // Aplicar formato elegante a la fila de cabecera
+      var headerRange = sheet.getRange("A1:F1");
+      headerRange.setFontWeight("bold")
+                 .setBackgroundColor("#0f766e") // Color Teal-700
+                 .setFontColor("#ffffff")
+                 .setHorizontalAlignment("center");
+      
+      sheet.setFrozenRows(1);
+    }
+
+    // Parsear los datos entrantes del formulario
+    var data = JSON.parse(e.postData.contents);
+    
+    // Insertar la nueva fila con los datos de evaluación
+    sheet.appendRow([
+      new Date(), // Genera la marca de tiempo de envío
+      data.name,
+      data.email,
+      data.group,
+      Number(data.rating),
+      data.comments || "Sin retroalimentación"
+    ]);
+
+    // Retornar respuesta de éxito
+    return ContentService.createTextOutput(JSON.stringify({ 
+      "status": "success", 
+      "message": "Autoevaluación registrada con éxito." 
+    }))
+    .setMimeType(ContentService.MimeType.JSON);
+
+  } catch (error) {
+    // Retornar error si algo sale mal
+    return ContentService.createTextOutput(JSON.stringify({ 
+      "status": "error", 
+      "message": error.toString() 
+    }))
+    .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// Habilitar opción preflight OPTIONS para peticiones CORS avanzadas
+function doOptions(e) {
+  return ContentService.createTextOutput("")
+    .setMimeType(ContentService.MimeType.TEXT);
+}</code></pre>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Side: Virtual Google Sheet Simulation & Config Panel -->
+        <div class="w-full lg:w-96 flex flex-col space-y-6">
+            
+            <!-- Connection Manager Card -->
+            <div class="bg-white rounded-3xl border border-slate-100 shadow-xl p-6 space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Conexión de Base de Datos</h3>
+                    <span id="conn-badge" class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                        <i class="fa-solid fa-cloud-slash"></i> Simulado
+                    </span>
+                </div>
+                
+                <p class="text-xs text-slate-500 leading-normal">
+                    De forma predeterminada, la aplicación funciona en modo simulado para que puedas ver el resultado inmediato. Vincula tu hoja real introduciendo la URL abajo:
+                </p>
+
+                <div class="space-y-2">
+                    <label for="appsScriptUrl" class="block text-xs font-semibold text-slate-700">URL del Web App (Apps Script):</label>
+                    <input type="url" id="appsScriptUrl" oninput="updateConnectionUrl()"
+                        class="w-full rounded-xl border border-slate-200 p-3 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200"
+                        placeholder="https://script.google.com/macros/s/.../exec">
+                </div>
+
+                <div id="conn-info" class="p-3 bg-amber-50 rounded-xl text-xs text-amber-800 border border-amber-100/50 leading-relaxed">
+                    <i class="fa-solid fa-circle-exclamation mr-1"></i> Modo <strong>Simulación</strong> activo. Las respuestas se agregarán directamente a la tabla simulada de abajo.
+                </div>
+            </div>
+
+            <!-- Virtual Sheet Live Preview -->
+            <div class="bg-white rounded-3xl border border-slate-100 shadow-xl p-6 flex-grow flex flex-col space-y-4 min-h-[350px]">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <div class="bg-emerald-100 text-emerald-800 p-1.5 rounded-lg">
+                            <i class="fa-solid fa-table text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-900">Vista Previa Google Sheets</h3>
+                            <p class="text-[10px] text-slate-400">Datos registrados en vivo</p>
+                        </div>
+                    </div>
+                    <!-- Clear mock button -->
+                    <button onclick="clearMockData()" title="Limpiar datos del simulador" class="text-xs text-slate-400 hover:text-slate-600">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+
+                <!-- Simulation Table Container -->
+                <div class="flex-grow overflow-auto border border-slate-100 rounded-xl bg-slate-50 relative min-h-[220px]">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead class="sticky top-0 bg-teal-800 text-white font-medium z-10">
+                            <tr>
+                                <th class="p-2 border-b border-slate-200 whitespace-nowrap">Estudiante</th>
+                                <th class="p-2 border-b border-slate-200 text-center whitespace-nowrap">Calificación</th>
+                                <th class="p-2 border-b border-slate-200 whitespace-nowrap">Comentario / Reflexión</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sheet-body" class="divide-y divide-slate-100 text-slate-700">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                    <div id="empty-sheet-msg" class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center space-y-2 pointer-events-none">
+                        <i class="fa-solid fa-file-excel text-slate-300 text-3xl"></i>
+                        <p class="text-xs font-semibold text-slate-400">Tu hoja de cálculo está vacía</p>
+                        <p class="text-[10px] text-slate-400">Los envíos aparecerán aquí</p>
+                    </div>
+                </div>
+
+                <!-- Live stats from submissions -->
+                <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 grid grid-cols-2 gap-2 text-center">
+                    <div class="p-2 bg-white rounded-xl shadow-sm">
+                        <p class="text-[10px] uppercase font-bold text-slate-400">Respuestas</p>
+                        <p id="stat-count" class="text-xl font-extrabold text-slate-800">0</p>
+                    </div>
+                    <div class="p-2 bg-white rounded-xl shadow-sm">
+                        <p class="text-[10px] uppercase font-bold text-slate-400">Promedio</p>
+                        <p id="stat-avg" class="text-xl font-extrabold text-teal-600">0.0 ★</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-100 py-6 mt-8">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p class="text-xs text-slate-400">Desarrollado para fines educativos - Autoevaluación en la Gerencia de la Innovación</p>
+            <p class="text-[10px] text-slate-300">Google Sheets y Google Apps Script son marcas comerciales de Google LLC.</p>
+        </div>
+    </footer>
+
+    <!-- JS Logic -->
+    <script>
+        // Global States
+        let currentRating = 0;
+        let hoverRatingValue = 0;
+        let appsScriptURL = '';
+        let mockData = [
+            { name: "Juan Carlos Pérez", email: "jcarlos.perez@uc.edu.co", group: "Administración de Empresas G1", rating: 5, comments: "Excelente módulo. El análisis de metodologías ágiles cambió mi visión empresarial." },
+            { name: "Mariana Gómez", email: "mgomez@uc.edu.co", group: "Administración de Empresas G2", rating: 4, comments: "Muy buen contenido, aunque me hubiese gustado profundizar más en el portafolio de innovación." }
+        ];
+
+        // Dynamic Rating Feedback texts
+        const ratingDescriptions = {
+            1: "1 Estrella: Aprendizaje básico / Inicial. Tengo dificultades notables con la teoría y la práctica de la innovación.",
+            2: "2 Estrellas: Aprendizaje en desarrollo. Comprendo conceptos clave, pero no sabría cómo liderar un proyecto innovador.",
+            3: "3 Estrellas: Aprendizaje intermedio. Comprendo la metodología de innovación y puedo implementarla con asistencia.",
+            4: "4 Estrellas: Aprendizaje avanzado. Domino las herramientas de innovación y puedo proponer estrategias de valor eficientemente.",
+            5: "5 Estrellas: Excelente / Sobresaliente. Me siento preparado/a para gestionar, auditar e impulsar la innovación estratégica a nivel gerencial."
+        };
+
+        // Window Onload
+        window.onload = function() {
+            // Check local storage for persistent connection URL
+            const savedUrl = localStorage.getItem('savedAppsScriptUrl');
+            if (savedUrl) {
+                document.getElementById('appsScriptUrl').value = savedUrl;
+                appsScriptURL = savedUrl;
+                updateConnectionUrl();
+            }
+            renderMockSheet();
+        }
+
+        // Tab Switching
+        function switchTab(tabId) {
+            const btnEval = document.getElementById('tab-evaluation');
+            const btnInteg = document.getElementById('tab-integration');
+            const viewEval = document.getElementById('view-evaluation');
+            const viewInteg = document.getElementById('view-integration');
+
+            if (tabId === 'evaluation') {
+                btnEval.className = "px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all duration-200 bg-white text-teal-700 shadow-sm";
+                btnInteg.className = "px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all duration-200 text-slate-600 hover:text-slate-900";
+                viewEval.classList.remove('hidden');
+                viewInteg.classList.add('hidden');
+            } else {
+                btnInteg.className = "px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all duration-200 bg-white text-teal-700 shadow-sm";
+                btnEval.className = "px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all duration-200 text-slate-600 hover:text-slate-900";
+                viewInteg.classList.remove('hidden');
+                viewEval.classList.add('hidden');
+            }
+        }
+
+        // Connection Handling
+        function updateConnectionUrl() {
+            const urlInput = document.getElementById('appsScriptUrl').value.trim();
+            const badge = document.getElementById('conn-badge');
+            const info = document.getElementById('conn-info');
+            const modeText = document.getElementById('mode-text');
+
+            if (urlInput.startsWith('https://script.google.com/')) {
+                appsScriptURL = urlInput;
+                localStorage.setItem('savedAppsScriptUrl', urlInput);
+                badge.className = "bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1";
+                badge.innerHTML = '<i class="fa-solid fa-cloud"></i> Conectado';
+                info.className = "p-3 bg-emerald-50 rounded-xl text-xs text-emerald-800 border border-emerald-100/50 leading-relaxed";
+                info.innerHTML = '<i class="fa-solid fa-circle-check mr-1"></i> ¡Conexión establecida! Los envíos irán directamente a tu Google Sheet en la nube.';
+                modeText.innerHTML = "Modo: Producción Real (Conectado a Sheets)";
+                modeText.parentElement.firstElementChild.className = "h-2 w-2 rounded-full bg-emerald-500 animate-pulse";
+            } else {
+                appsScriptURL = '';
+                localStorage.removeItem('savedAppsScriptUrl');
+                badge.className = "bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1";
+                badge.innerHTML = '<i class="fa-solid fa-cloud-slash"></i> Simulado';
+                info.className = "p-3 bg-amber-50 rounded-xl text-xs text-amber-800 border border-amber-100/50 leading-relaxed";
+                info.innerHTML = '<i class="fa-solid fa-circle-exclamation mr-1"></i> Modo <strong>Simulación</strong> activo. Las respuestas se agregarán directamente a la tabla simulada de abajo.';
+                modeText.innerHTML = "Modo: Simulado (Guardado local temporal)";
+                modeText.parentElement.firstElementChild.className = "h-2 w-2 rounded-full bg-amber-500 animate-pulse";
+            }
+        }
+
+        // Interactive Star Rating Render
+        function setRating(rating) {
+            currentRating = rating;
+            updateStarUI(rating);
+            const feedbackText = document.getElementById('feedback-rating');
+            feedbackText.innerText = ratingDescriptions[rating];
+            feedbackText.className = "text-xs font-bold text-amber-600 transition-all duration-200";
+        }
+
+        // Hover handling for smoother mouse/pointer interactions
+        function hoverStars(rating) {
+            updateStarUI(rating);
+            const feedbackText = document.getElementById('feedback-rating');
+            feedbackText.innerText = ratingDescriptions[rating];
+            feedbackText.className = "text-xs font-semibold text-slate-500 transition-all duration-200";
+        }
+
+        function resetStars() {
+            updateStarUI(currentRating);
+            const feedbackText = document.getElementById('feedback-rating');
+            if (currentRating > 0) {
+                feedbackText.innerText = ratingDescriptions[currentRating];
+                feedbackText.className = "text-xs font-bold text-amber-600 transition-all duration-200";
+            } else {
+                feedbackText.innerText = "Por favor, selecciona una calificación";
+                feedbackText.className = "text-xs font-semibold text-slate-400 transition-all duration-200";
+            }
+        }
+
+        function updateStarUI(rating) {
+            const stars = document.querySelectorAll('.star-svg');
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.remove('text-slate-300');
+                    star.classList.add('text-amber-500', 'star-glow');
+                } else {
+                    star.classList.remove('text-amber-500', 'star-glow');
+                    star.classList.add('text-slate-300');
+                }
+            });
+        }
+
+        // Render virtual sheet preview
+        function renderMockSheet() {
+            const tbody = document.getElementById('sheet-body');
+            const emptyMsg = document.getElementById('empty-sheet-msg');
+            const statCount = document.getElementById('stat-count');
+            const statAvg = document.getElementById('stat-avg');
+
+            tbody.innerHTML = '';
+            
+            if (mockData.length === 0) {
+                emptyMsg.classList.remove('hidden');
+                statCount.innerText = '0';
+                statAvg.innerText = '0.0 ★';
+                return;
+            }
+
+            emptyMsg.classList.add('hidden');
+            let totalStars = 0;
+
+            mockData.forEach(item => {
+                totalStars += item.rating;
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-100/50 transition-colors duration-150";
+
+                // Stars display inside the sheet row
+                let starDisplay = '';
+                for (let i = 0; i < 5; i++) {
+                    if (i < item.rating) {
+                        starDisplay += '<i class="fa-solid fa-star text-amber-400"></i>';
+                    } else {
+                        starDisplay += '<i class="fa-regular fa-star text-slate-300"></i>';
+                    }
+                }
+
+                tr.innerHTML = `
+                    <td class="p-3 border-b border-slate-100">
+                        <p class="font-bold text-slate-800">${escapeHTML(item.name)}</p>
+                        <p class="text-[10px] text-teal-600 font-semibold">${escapeHTML(item.group || 'Sin grupo')}</p>
+                        <p class="text-[10px] text-slate-400">${escapeHTML(item.email)}</p>
+                    </td>
+                    <td class="p-3 text-center border-b border-slate-100">
+                        <div class="flex items-center justify-center space-x-0.5 whitespace-nowrap">
+                            ${starDisplay}
+                        </div>
+                    </td>
+                    <td class="p-3 border-b border-slate-100 max-w-[150px] truncate text-[11px] text-slate-500" title="${escapeHTML(item.comments)}">
+                        ${escapeHTML(item.comments || '-')}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Update stats
+            statCount.innerText = mockData.length;
+            const average = (totalStars / mockData.length).toFixed(1);
+            statAvg.innerText = `${average} ★`;
+        }
+
+        function clearMockData() {
+            if (confirm("¿Estás seguro de que deseas limpiar los registros del simulador?")) {
+                mockData = [];
+                renderMockSheet();
+            }
+        }
+
+        // Form Submit Handler
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('studentName').value.trim();
+            const email = document.getElementById('studentEmail').value.trim();
+            const group = document.getElementById('studentGroup').value;
+            const comments = document.getElementById('comments').value.trim();
+
+            // Strict Institutional Email Check
+            if (!email.endsWith('@uc.edu.co')) {
+                showBanner('Error: Debes ingresar tu correo institucional terminado en @uc.edu.co para registrar la autoevaluación.', 'error');
+                return;
+            }
+
+            if (!group) {
+                showBanner('Por favor, selecciona un grupo de estudio.', 'error');
+                return;
+            }
+
+            if (currentRating === 0) {
+                showBanner('Por favor, selecciona una calificación con estrellas.', 'error');
+                return;
+            }
+
+            const payload = {
+                name: name,
+                email: email,
+                group: group,
+                rating: currentRating,
+                comments: comments
+            };
+
+            const submitBtn = document.getElementById('submitBtn');
+            setButtonState(submitBtn, true);
+
+            if (appsScriptURL) {
+                // Real Live Deployment mode
+                try {
+                    const response = await fetch(appsScriptURL, {
+                        method: 'POST',
+                        mode: 'no-cors', // Apps Script requires no-cors to bypass redirect CORS error
+                        headers: {
+                            'Content-Type': 'text/plain' // Bypass complex CORS preflights
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    // Add to simulated log anyways for double visual feedback
+                    mockData.unshift(payload);
+                    renderMockSheet();
+
+                    showBanner('¡Éxito! Tu autoevaluación se envió exitosamente a Google Sheets.', 'success');
+                    resetForm();
+
+                } catch (error) {
+                    console.error('Error submitting form:', error);
+                    showBanner('Ocurrió un error al enviar al servidor real. Asegúrate de haber desplegado correctamente el script.', 'error');
+                } finally {
+                    setButtonState(submitBtn, false);
+                }
+            } else {
+                // Simulation Mode
+                setTimeout(() => {
+                    mockData.unshift(payload);
+                    renderMockSheet();
+                    showBanner('¡Excelente! (Simulado) Evaluación registrada con éxito en el simulador de Sheets.', 'success');
+                    resetForm();
+                    setButtonState(submitBtn, false);
+                }, 800); // Feel like actual database response
+            }
+        }
+
+        // UI Helpers
+        function setButtonState(btn, isLoading) {
+            const textSpan = btn.querySelector('span');
+            const icon = btn.querySelector('i');
+            if (isLoading) {
+                btn.disabled = true;
+                btn.classList.add('opacity-70', 'cursor-not-allowed');
+                textSpan.innerText = 'Enviando...';
+                icon.className = "fa-solid fa-circle-notch animate-spin";
+            } else {
+                btn.disabled = false;
+                btn.classList.remove('opacity-70', 'cursor-not-allowed');
+                textSpan.innerText = 'Enviar Evaluación';
+                icon.className = "fa-solid fa-paper-plane";
+            }
+        }
+
+        function showBanner(message, type) {
+            const banner = document.getElementById('status-banner');
+            banner.innerText = message;
+            banner.classList.remove('hidden', 'bg-rose-50', 'text-rose-800', 'border-rose-100', 'bg-emerald-50', 'text-emerald-800', 'border-emerald-100');
+            
+            if (type === 'error') {
+                banner.classList.add('bg-rose-50', 'text-rose-800', 'border', 'border-rose-100');
+            } else {
+                banner.classList.add('bg-emerald-50', 'text-emerald-800', 'border', 'border-emerald-100');
+            }
+            
+            banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            // Fade out after 6 seconds
+            setTimeout(() => {
+                banner.classList.add('hidden');
+            }, 6000);
+        }
+
+        function resetForm() {
+            document.getElementById('evalForm').reset();
+            document.getElementById('studentGroup').selectedIndex = 0;
+            currentRating = 0;
+            updateStarUI(0);
+            document.getElementById('feedback-rating').innerText = "Por favor, selecciona una calificación";
+            document.getElementById('feedback-rating').className = "text-xs font-semibold text-slate-400 transition-all duration-200";
+        }
+
+        // Copy mechanism
+        function copyAppsScriptCode() {
+            const code = document.getElementById('code-block').innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = code;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                const copyBtn = document.getElementById('copyBtn');
+                copyBtn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> <span class="text-emerald-400">¡Copiado!</span>';
+                setTimeout(() => {
+                    copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i> <span>Copiar Código</span>';
+                }, 3000);
+            } catch (err) {
+                console.error('Error al copiar el código:', err);
+            }
+            document.body.removeChild(textarea);
+        }
+
+        // HTML escaping
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag] || tag)
+            );
+        }
+    </script>
+</body>
+</html>
